@@ -1,1 +1,292 @@
+import os, zipfile, textwrap
+
+base = "/mnt/data/harassment_detection_frontend"
+os.makedirs(base, exist_ok=True)
+
+files = {
+"index.html": r'''<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1020" />
+  <title>SentinelAI | Harassment Detection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="SentinelAI home">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span><strong>sentinel<span>AI</span></strong><small>SAFETY INTELLIGENCE</small></span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="nav">
+        <a class="nav-link active" href="#overview"><span class="nav-icon">◫</span> Overview</a>
+        <a class="nav-link" href="#analyzer"><span class="nav-icon">⌕</span> Message analyzer <span class="nav-count">01</span></a>
+        <a class="nav-link" href="#incidents"><span class="nav-icon">⚑</span> Incident queue <span class="nav-dot"></span></a>
+        <a class="nav-link" href="#behavior"><span class="nav-icon">⌁</span> Behavior patterns</a>
+        <a class="nav-link" href="#metrics"><span class="nav-icon">▥</span> Model metrics</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="privacy-card">
+          <div class="privacy-icon">♧</div>
+          <div><strong>Privacy-first design</strong><p>Demo analysis runs in your browser. No message is sent anywhere.</p></div>
+        </div>
+        <button class="profile">
+          <span class="avatar">IS</span>
+          <span class="profile-text"><strong>Safety workspace</strong><small>HackSploit 2026 · PoC</small></span>
+          <span class="profile-more">•••</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content" id="overview">
+      <header class="topbar">
+        <button class="menu-button" id="menuButton" aria-label="Toggle navigation">☰</button>
+        <div class="breadcrumb">Workspace <span>/</span> <strong>Overview</strong></div>
+        <div class="topbar-right">
+          <span class="system-status"><i></i> SYSTEM ONLINE</span>
+          <button class="icon-button" aria-label="Notifications">♧<b></b></button>
+          <span class="top-avatar">IS</span>
+        </div>
+      </header>
+
+      <section class="welcome-row">
+        <div>
+          <div class="eyebrow"><span class="eyebrow-line"></span> DIGITAL SAFETY INTELLIGENCE</div>
+          <h1>Protect people.<br><span>Detect harmful behavior.</span></h1>
+          <p class="welcome-copy">Identify risky messages and repeated unwanted interactions before they escalate.</p>
+        </div>
+        <div class="date-chip"><span class="date-dot"></span> HACKSPLOIT 2026 <span class="date-divider"></span> PROTOTYPE</div>
+      </section>
+
+      <section class="stats-grid" aria-label="Overview metrics">
+        <article class="stat-card">
+          <div class="stat-top"><span>Messages analyzed</span><span class="stat-icon blue">⌕</span></div>
+          <div class="stat-value" id="messagesAnalyzed">1,284</div>
+          <div class="stat-foot"><span class="trend">↗ 12.8%</span><span>vs. previous period</span></div>
+          <div class="mini-bars bars-blue"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top"><span>Flagged for review</span><span class="stat-icon amber">⚑</span></div>
+          <div class="stat-value" id="flaggedCount">37</div>
+          <div class="stat-foot"><span class="trend amber-text">Needs attention</span><span>human review recommended</span></div>
+          <div class="mini-bars bars-amber"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top"><span>High-risk patterns</span><span class="stat-icon red">⌁</span></div>
+          <div class="stat-value">08</div>
+          <div class="stat-foot"><span class="trend red-text">Repeated behavior</span><span>across interactions</span></div>
+          <div class="mini-bars bars-red"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top"><span>Review coverage</span><span class="stat-icon green">✓</span></div>
+          <div class="stat-value">94.2<span class="value-unit">%</span></div>
+          <div class="stat-foot"><span class="trend">↑ 3.4%</span><span>illustrative demo value</span></div>
+          <div class="progress-line"><span style="width:94.2%"></span></div>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel analyzer-panel" id="analyzer">
+          <div class="panel-heading">
+            <div><div class="section-kicker">LIVE TOOL</div><h2>Message analyzer</h2><p>Check text for potentially harmful language.</p></div>
+            <span class="live-pill"><i></i> LOCAL DEMO</span>
+          </div>
+          <label for="messageInput" class="input-label">MESSAGE CONTENT <span>TEXT ANALYSIS</span></label>
+          <textarea id="messageInput" placeholder="Paste a message here to analyze its risk..."></textarea>
+          <div class="input-meta"><span id="charCount">0 characters</span><span>Do not enter private or identifying information.</span></div>
+          <div class="sample-row"><span>Try sample:</span><button class="sample-chip" data-sample="You're useless and everyone hates you.">Insult</button><button class="sample-chip" data-sample="If you don't reply, I'll keep messaging you from new accounts.">Repeated contact</button><button class="sample-chip" data-sample="Hey, are we still meeting at 4 PM?">Safe message</button></div>
+          <button class="primary-button" id="analyzeButton"><span>✳</span> Analyze message <span class="button-arrow">→</span></button>
+          <div class="result-card hidden" id="resultCard" aria-live="polite">
+            <div class="result-header"><div><span class="result-label">DEMO ASSESSMENT</span><h3 id="resultTitle">Potential concern detected</h3></div><span class="risk-badge" id="riskBadge">REVIEW</span></div>
+            <p id="resultDescription"></p>
+            <div class="result-meter"><div><span>Heuristic risk score</span><strong id="riskScore">0%</strong></div><div class="meter-track"><span id="riskMeter"></span></div></div>
+            <div class="result-note"><span>ⓘ</span> This is a lightweight frontend demo, not a validated AI prediction. Confirm results with a trained model and human review.</div>
+          </div>
+        </article>
+
+        <article class="panel signals-panel" id="behavior">
+          <div class="panel-heading">
+            <div><div class="section-kicker">BEHAVIORAL SIGNALS</div><h2>What the system looks for</h2><p>Context matters beyond individual keywords.</p></div>
+            <span class="outline-icon">⌁</span>
+          </div>
+          <div class="signal-list">
+            <div class="signal-item"><div class="signal-icon violet">↻</div><div class="signal-copy"><strong>Repeated unwanted contact</strong><p>High frequency of messages after a person asks for contact to stop.</p></div><span class="signal-status purple-status">PATTERN</span></div>
+            <div class="signal-item"><div class="signal-icon orange">⚑</div><div class="signal-copy"><strong>Threatening language</strong><p>Language that may suggest intimidation or a threat.</p></div><span class="signal-status orange-status">CONTENT</span></div>
+            <div class="signal-item"><div class="signal-icon pink">◎</div><div class="signal-copy"><strong>Abusive or degrading tone</strong><p>Insults, targeted harassment, or identity-based abuse.</p></div><span class="signal-status pink-status">TONE</span></div>
+            <div class="signal-item"><div class="signal-icon teal">◈</div><div class="signal-copy"><strong>Cross-message escalation</strong><p>Increasing intensity, persistence, or multiple channels over time.</p></div><span class="signal-status teal-status">CONTEXT</span></div>
+          </div>
+          <div class="signals-footer"><span class="shield-small">◇</span><span>Risk indicators support review; they do not establish intent or guilt.</span></div>
+        </article>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="panel incidents-panel" id="incidents">
+          <div class="panel-heading compact-heading">
+            <div><div class="section-kicker">NEEDS REVIEW</div><h2>Recent flagged items</h2></div>
+            <button class="text-button" id="viewAllButton">View all <span>→</span></button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ITEM</th><th>DETECTION SIGNAL</th><th>RISK</th><th>STATUS</th></tr></thead>
+              <tbody id="incidentRows">
+                <tr><td><span class="item-icon">✉</span><span class="item-main">Message #1048<small>Direct message · 2 min ago</small></span></td><td>Repeated unwanted contact</td><td><span class="risk-high">High</span></td><td><span class="status-review">Needs review</span></td></tr>
+                <tr><td><span class="item-icon">✉</span><span class="item-main">Message #1042<small>Comment · 18 min ago</small></span></td><td>Targeted insult</td><td><span class="risk-medium">Medium</span></td><td><span class="status-review">Needs review</span></td></tr>
+                <tr><td><span class="item-icon">◉</span><span class="item-main">Media #1039<small>Upload · 42 min ago</small></span></td><td>Manual review requested</td><td><span class="risk-medium">Medium</span></td><td><span class="status-queued">Queued</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span>Showing illustrative sample records</span><span>Updated just now <i class="refresh-dot"></i></span></div>
+        </article>
+
+        <article class="panel metrics-panel" id="metrics">
+          <div class="panel-heading compact-heading">
+            <div><div class="section-kicker">MODEL EVALUATION</div><h2>Validation metrics</h2></div>
+            <span class="demo-tag">DEMO DATA</span>
+          </div>
+          <p class="metrics-copy">Replace these placeholders with results from a labeled test set.</p>
+          <div class="metric-row"><div><span>Precision</span><strong>—</strong></div><div class="metric-track"><span style="width:78%"></span></div><small>Not measured</small></div>
+          <div class="metric-row"><div><span>Recall</span><strong>—</strong></div><div class="metric-track teal-track"><span style="width:66%"></span></div><small>Not measured</small></div>
+          <div class="metric-row"><div><span>F1 score</span><strong>—</strong></div><div class="metric-track purple-track"><span style="width:71%"></span></div><small>Not measured</small></div>
+          <div class="metrics-note"><span>✳</span> Evaluate against ground-truth labels before presenting performance claims.</div>
+        </article>
+      </section>
+
+      <footer class="footer"><span>© 2026 SentinelAI <span class="footer-separator">·</span> HackSploit PoC</span><span><i></i> Prototype interface <span class="footer-separator">·</span> No real-time monitoring connected</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>
+''',
+"styles.css": r''':root{--bg:#0b1020;--panel:#11182b;--panel2:#0f1729;--line:#242d43;--muted:#8490a8;--text:#edf2ff;--blue:#7187ff;--cyan:#64d9d0;--font:'DM Sans',sans-serif;--display:'Space Grotesk',sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px}.app-shell{min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:248px;background:#0d1324;border-right:1px solid #20283b;padding:27px 17px 17px;display:flex;flex-direction:column;z-index:10}.brand{display:flex;align-items:center;gap:12px;padding:0 10px 39px;color:inherit;text-decoration:none}.brand strong{font:700 22px var(--display);letter-spacing:-1px;display:block}.brand strong span{color:#8293ff}.brand small{display:block;color:#74819d;font-size:8px;letter-spacing:1.8px;margin-top:2px}.brand-mark{width:34px;height:34px;border:1px solid #7588ff;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:3px;transform:rotate(-4deg)}.brand-mark span{width:3px;border-radius:5px;background:#7c8dff}.brand-mark span:nth-child(1){height:10px}.brand-mark span:nth-child(2){height:18px}.brand-mark span:nth-child(3){height:13px}.workspace-label,.section-kicker{font-size:9px;letter-spacing:1.8px;color:#74809b;font-weight:700}.workspace-label{padding:0 12px 13px}.nav{display:grid;gap:5px}.nav-link{height:43px;display:flex;align-items:center;gap:12px;padding:0 12px;color:#96a2bb;text-decoration:none;border-radius:8px;font-size:12px;transition:.2s}.nav-link:hover,.nav-link.active{background:#1a2340;color:#f1f4ff}.nav-link.active{box-shadow:inset 2px 0 #8292ff}.nav-icon{font-size:18px;width:19px;text-align:center;color:#9ba8c9}.nav-count{margin-left:auto;font-size:10px;background:#2b3559;padding:3px 6px;border-radius:5px;color:#c9d1ff}.nav-dot{margin-left:auto;width:6px;height:6px;background:#f6b65b;border-radius:50%}.sidebar-bottom{margin-top:auto}.privacy-card{background:#121b30;border:1px solid #26314a;border-radius:10px;padding:13px;display:flex;gap:10px;margin:0 2px 17px}.privacy-icon{width:28px;height:28px;flex-shrink:0;border-radius:8px;background:#1d3a3c;color:#70d9c9;display:grid;place-items:center;font-size:17px}.privacy-card strong{font-size:10px}.privacy-card p{font-size:10px;line-height:1.6;color:#8d9ab3;margin:5px 0 0}.profile{width:100%;border:0;border-top:1px solid #242c40;background:transparent;color:inherit;padding:16px 4px 0;display:flex;align-items:center;text-align:left;gap:9px}.avatar,.top-avatar{display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,#8c9cff,#4b5ab4);font-size:10px;font-weight:700;color:white;width:31px;height:31px}.profile-text{display:grid;gap:4px}.profile-text strong{font-size:11px}.profile-text small{font-size:9px;color:#8591a9}.profile-more{margin-left:auto;color:#8792aa;letter-spacing:2px}.main-content{margin-left:248px;padding:0 35px;max-width:1700px}.topbar{height:70px;display:flex;align-items:center;border-bottom:1px solid #20283b;gap:14px}.breadcrumb{font-size:11px;color:#8b97af}.breadcrumb span{margin:0 10px;color:#515d76}.breadcrumb strong{color:#e3e9fb;font-weight:500}.topbar-right{margin-left:auto;display:flex;align-items:center;gap:19px}.system-status{font-size:9px;letter-spacing:1px;color:#7e8ca6;display:flex;align-items:center;gap:7px}.system-status i,.live-pill i,.footer i{width:6px;height:6px;display:inline-block;background:#54d9b0;border-radius:50%;box-shadow:0 0 9px #54d9b077}.icon-button{position:relative;border:0;background:none;color:#9da9c1;font-size:18px}.icon-button b{position:absolute;width:5px;height:5px;border-radius:50%;background:#f7b85c;right:0;top:0}.top-avatar{width:29px;height:29px;font-size:9px}.menu-button{display:none;background:transparent;color:#fff;border:0;font-size:20px}.welcome-row{display:flex;align-items:flex-end;justify-content:space-between;padding:33px 0 27px;gap:20px}.eyebrow{display:flex;align-items:center;gap:9px;font-size:9px;letter-spacing:1.8px;color:#8c9af8;font-weight:700}.eyebrow-line{height:1px;width:23px;background:#8492ff}.welcome-row h1{font:600 clamp(28px,3.1vw,39px)/1.15 var(--display);letter-spacing:-1.7px;margin:15px 0 9px}.welcome-row h1 span{color:#8594ff}.welcome-copy{margin:0;color:#8d9ab4;font-size:12px}.date-chip{display:flex;align-items:center;gap:9px;border:1px solid #2a3550;border-radius:6px;padding:10px 12px;font-size:9px;letter-spacing:1px;color:#aab5cd;white-space:nowrap;margin-bottom:3px}.date-dot{width:6px;height:6px;background:#8c9bff;border-radius:50%}.date-divider{height:13px;width:1px;background:#34405b;margin:0 3px}.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.stat-card,.panel{background:linear-gradient(145deg,#121a2e,#101729);border:1px solid #263047;border-radius:11px}.stat-card{padding:16px 17px 14px;position:relative;overflow:hidden;min-height:145px}.stat-top{display:flex;justify-content:space-between;align-items:center;color:#a5b0c7;font-size:11px}.stat-icon{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;font-size:17px}.blue{background:#202b51;color:#92a3ff}.amber{background:#3b2c23;color:#ffbd72}.red{background:#3b2534;color:#ff8aab}.green{background:#1d3939;color:#70ddc6}.stat-value{font:600 29px var(--display);letter-spacing:-1px;margin:11px 0 5px}.value-unit{font-size:18px;color:#a4b0c7;margin-left:2px}.stat-foot{display:flex;gap:7px;align-items:center;font-size:9px;color:#7f8ba5;white-space:nowrap}.trend{color:#6edac0;font-weight:700}.amber-text{color:#ffbf73}.red-text{color:#ff8ca9}.mini-bars{position:absolute;right:16px;bottom:0;display:flex;align-items:flex-end;gap:3px;height:24px;opacity:.6}.mini-bars i{display:block;width:4px;border-radius:3px 3px 0 0;background:#6178f7;height:var(--h,50%)}.mini-bars i:nth-child(2n){--h:75%}.mini-bars i:nth-child(3n){--h:35%}.mini-bars i:nth-child(4n){--h:95%}.bars-amber i{background:#e9a85e}.bars-red i{background:#e7799a}.progress-line{height:4px;background:#25304a;border-radius:5px;margin-top:13px;overflow:hidden}.progress-line span{height:100%;display:block;background:#67d6bf;border-radius:5px}.content-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:15px;margin-top:16px}.panel{padding:20px;min-width:0}.panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:22px}.panel-heading h2{font:600 17px var(--display);letter-spacing:-.4px;margin:7px 0 5px}.panel-heading p{font-size:10px;color:#8d99b1;margin:0}.live-pill,.demo-tag{display:flex;align-items:center;gap:6px;border:1px solid #285147;border-radius:5px;padding:6px 8px;font-size:8px;letter-spacing:.8px;color:#7ad8bd;white-space:nowrap}.live-pill i{width:5px;height:5px}.input-label{display:flex;justify-content:space-between;color:#9aa7c0;font-size:9px;font-weight:700;letter-spacing:1.1px;margin-bottom:9px}.input-label span{font-weight:400;color:#687691;font-size:8px}textarea{width:100%;min-height:112px;resize:vertical;background:#0b1222;border:1px solid #2b3650;border-radius:8px;color:#e8edff;padding:13px 14px;font:12px/1.7 var(--font);outline:none;transition:.2s}textarea:focus{border-color:#798aff;box-shadow:0 0 0 3px #798aff18}textarea::placeholder{color:#586681}.input-meta{display:flex;justify-content:space-between;gap:10px;color:#67758f;font-size:9px;margin-top:7px}.sample-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:15px 0 17px}.sample-row>span{font-size:9px;color:#7e8ba5;margin-right:3px}.sample-chip{background:#1a2339;border:1px solid #2c3852;color:#aab7d1;border-radius:5px;padding:6px 8px;font:9px var(--font);cursor:pointer}.sample-chip:hover{border-color:#8292ff;color:#dfe5ff}.primary-button{width:100%;border:0;border-radius:7px;padding:12px 14px;background:linear-gradient(100deg,#7888ff,#6774e8);color:white;font:600 11px var(--font);cursor:pointer;box-shadow:0 6px 18px #6474e522;transition:.2s}.primary-button:hover{filter:brightness(1.1);transform:translateY(-1px)}.primary-button>span:first-child{margin-right:7px}.button-arrow{float:right;font-size:15px;line-height:11px}.result-card{margin-top:15px;background:#0d1425;border:1px solid #34415d;border-radius:8px;padding:15px}.hidden{display:none!important}.result-header{display:flex;justify-content:space-between;gap:10px}.result-label{font-size:8px;letter-spacing:1.3px;color:#8795b2}.result-header h3{font:600 15px var(--display);margin:5px 0 0}.risk-badge{align-self:flex-start;border-radius:5px;padding:6px 8px;font-size:8px;letter-spacing:.8px;background:#382d21;color:#ffc47c}.risk-badge.safe{background:#1b3733;color:#6de0c1}.result-card>p{font-size:11px;line-height:1.6;color:#9aa7c0}.result-meter>div:first-child{display:flex;justify-content:space-between;font-size:10px;color:#8d9ab3;margin-bottom:8px}.result-meter strong{color:#f0f3ff}.meter-track,.metric-track{height:5px;border-radius:10px;background:#28324a;overflow:hidden}.meter-track span{display:block;height:100%;width:0;background:#f4b76c;transition:width .4s}.meter-track span.safe-meter{background:#67d6bf}.result-note{display:flex;gap:7px;font-size:9px;line-height:1.5;color:#7f8ba4;margin-top:13px}.result-note span{color:#93a1ff}.outline-icon{border:1px solid #2e3a55;color:#9ca9ff;border-radius:8px;width:32px;height:32px;display:grid;place-items:center;font-size:20px}.signal-list{display:grid;gap:0}.signal-item{display:flex;align-items:flex-start;gap:10px;padding:14px 0;border-bottom:1px solid #242d42}.signal-item:first-child{padding-top:0}.signal-item:last-child{border-bottom:0}.signal-icon{flex-shrink:0;width:31px;height:31px;border-radius:8px;display:grid;place-items:center;font-size:16px}.violet{background:#2c2750;color:#b4a5ff}.orange{background:#3c2c25;color:#ffc083}.pink{background:#3b2538;color:#ff9fca}.teal{background:#1c383a;color:#79ded3}.signal-copy{min-width:0;flex:1}.signal-copy strong{font-size:10px;font-weight:600}.signal-copy p{font-size:9px;line-height:1.55;color:#8996af;margin:5px 0 0}.signal-status{font-size:7px;letter-spacing:.7px;padding:5px 6px;border-radius:4px;white-space:nowrap;margin-top:1px}.purple-status{color:#b8a8ff;background:#2b2647}.orange-status{color:#ffc184;background:#3a2b23}.pink-status{color:#ffa3cb;background:#3b2638}.teal-status{color:#80dfd5;background:#1b3738}.signals-footer{display:flex;align-items:center;gap:8px;background:#0e1627;border:1px solid #263047;border-radius:7px;padding:10px;margin-top:15px;font-size:9px;line-height:1.5;color:#8492ac}.shield-small{font-size:17px;color:#8e9cff}.bottom-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:15px;margin-top:15px}.compact-heading{align-items:center;margin-bottom:15px}.compact-heading h2{margin-bottom:0}.text-button{border:0;background:transparent;color:#98a7ff;font:10px var(--font);cursor:pointer}.text-button span{font-size:14px;margin-left:5px}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th{text-align:left;color:#6f7d98;font-size:8px;letter-spacing:.8px;font-weight:600;padding:11px 8px;border-bottom:1px solid #2a344a}td{padding:13px 8px;border-bottom:1px solid #222c41;font-size:9px;color:#a5b0c8}tbody tr:last-child td{border-bottom:0}.item-icon{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:7px;background:#202a44;color:#9aa8ff;margin-right:8px;vertical-align:middle}.item-main{display:inline-block;vertical-align:middle;color:#d8dff1;font-weight:600}.item-main small{display:block;font-size:8px;color:#77849d;font-weight:400;margin-top:4px}.risk-high,.risk-medium{font-size:8px;font-weight:700}.risk-high{color:#ff91a7}.risk-medium{color:#ffc078}.status-review,.status-queued{font-size:8px;border-radius:4px;padding:5px 7px;background:#392b25;color:#ffc181}.status-queued{background:#242d48;color:#a4b2ff}.table-footer{display:flex;justify-content:space-between;gap:10px;border-top:1px solid #242d42;padding-top:12px;color:#75829b;font-size:8px}.table-footer i{display:inline-block;width:5px;height:5px;margin-left:4px}.demo-tag{color:#b5a5ff;border-color:#39315d;background:#25203f}.metrics-copy{font-size:9px;color:#7e8ba4;margin:-3px 0 18px}.metric-row{margin-bottom:16px}.metric-row>div:first-child{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.metric-row>div:first-child span{font-size:10px;color:#a5b0c7}.metric-row strong{font:600 12px var(--display);color:#dce3f6}.metric-track span{display:block;height:100%;background:#7d8bff;border-radius:5px;opacity:.8}.teal-track span{background:#66d5c3}.purple-track span{background:#b19aff}.metric-row small{display:block;color:#687691;font-size:8px;margin-top:5px}.metrics-note{display:flex;gap:8px;background:#0d1627;border:1px solid #283149;border-radius:7px;padding:10px;font-size:9px;line-height:1.5;color:#8592aa;margin-top:21px}.metrics-note span{color:#a89aff}.footer{display:flex;justify-content:space-between;gap:15px;padding:21px 0 24px;color:#65728c;font-size:9px}.footer-separator{padding:0 7px;color:#3c4860}.footer i{width:5px;height:5px;margin-right:5px}.toast{position:fixed;right:25px;bottom:25px;background:#202b44;border:1px solid #3a4968;color:#e9eeff;border-radius:8px;padding:12px 16px;font-size:11px;box-shadow:0 10px 35px #0005;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;z-index:20}.toast.show{opacity:1;transform:translateY(0)}
+@media(min-width:1500px){.main-content{margin-left:248px;padding-left:46px;padding-right:46px}.stat-card{min-height:158px}.panel{padding:24px}}
+@media(max-width:1150px){.main-content{padding:0 22px}.sidebar{width:220px}.main-content{margin-left:220px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content-grid,.bottom-grid{grid-template-columns:1fr}.signals-panel{min-height:auto}.signal-list{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px}.signal-item:nth-child(2){border-bottom:1px solid #242d42}.signal-item:nth-child(3){border-bottom:0}.signals-footer{margin-top:10px}}
+@media(max-width:720px){.sidebar{transform:translateX(-100%);transition:transform .25s;width:250px;box-shadow:20px 0 40px #0004}.sidebar.open{transform:translateX(0)}.main-content{margin-left:0;padding:0 16px}.menu-button{display:block}.topbar{height:60px}.system-status{display:none}.welcome-row{padding:25px 0 20px;display:block}.date-chip{display:inline-flex;margin-top:17px}.welcome-row h1{font-size:32px}.stats-grid{gap:10px}.stat-card{padding:13px;min-height:139px}.stat-value{font-size:26px}.stat-foot{font-size:8px;white-space:normal;flex-wrap:wrap}.content-grid,.bottom-grid{gap:12px;margin-top:12px}.panel{padding:16px}.signal-list{grid-template-columns:1fr}.signal-item:nth-child(2){border-bottom:1px solid #242d42}.signal-item:nth-child(3){border-bottom:1px solid #242d42}.footer{flex-direction:column}.input-meta{flex-direction:column;gap:4px}.sample-row{gap:5px}.topbar-right{gap:12px}}
+@media(max-width:390px){.stats-grid{grid-template-columns:1fr 1fr}.stat-top{font-size:9px}.stat-icon{width:24px;height:24px}.stat-value{font-size:23px}.stat-foot{font-size:7px}.welcome-row h1{font-size:28px}.panel-heading h2{font-size:15px}.live-pill{font-size:7px}}
+''',
+"script.js": r'''const messageInput = document.getElementById('messageInput');
+const charCount = document.getElementById('charCount');
+const analyzeButton = document.getElementById('analyzeButton');
+const resultCard = document.getElementById('resultCard');
+const toast = document.getElementById('toast');
+let analyzedCount = 1284;
+let flaggedCount = 37;
+let toastTimer;
+
+const signals = [
+  { key: /\b(kill|hurt|attack|beat you|find you)\b/i, weight: 45, name: 'Possible threatening language', description: 'The text contains language that may be perceived as threatening. Context is needed before drawing a conclusion.' },
+  { key: /\b(useless|idiot|stupid|pathetic|hate you|worthless|everyone hates you)\b/i, weight: 35, name: 'Potential insult or degrading language', description: 'The text may contain insulting or degrading language directed at someone.' },
+  { key: /\b(keep messaging|new accounts|won.t stop|won't stop|follow you|watching you|reply to me)\b/i, weight: 38, name: 'Possible unwanted-contact signal', description: 'The message may indicate persistent contact. A behavioral model needs message history and consent/context to assess stalking patterns.' },
+  { key: /\b(send nudes|explicit photo|private photo)\b/i, weight: 30, name: 'Potential sexual-boundary concern', description: 'The text may involve a sensitive request. Review context and consent; this demo does not analyze images or media.' },
+  { key: /\b(damn|hell|crap)\b/i, weight: 8, name: 'Mild profanity signal', description: 'A potentially profane term was found, but profanity alone does not establish harassment.' }
+];
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+messageInput.addEventListener('input', () => {
+  charCount.textContent = `${messageInput.value.length} character${messageInput.value.length === 1 ? '' : 's'}`;
+});
+
+document.querySelectorAll('.sample-chip').forEach(button => {
+  button.addEventListener('click', () => {
+    messageInput.value = button.dataset.sample;
+    messageInput.dispatchEvent(new Event('input'));
+    messageInput.focus();
+  });
+});
+
+analyzeButton.addEventListener('click', () => {
+  const message = messageInput.value.trim();
+  if (!message) {
+    messageInput.focus();
+    showToast('Enter a message first, or choose one of the sample messages.');
+    return;
+  }
+
+  const matched = signals.filter(signal => signal.key.test(message));
+  let score = matched.reduce((total, signal) => total + signal.weight, 0);
+  // Repetition terms are only a text hint; actual stalking detection requires message history.
+  if (/\b(again|every day|all the time|multiple times|won't stop|wont stop)\b/i.test(message)) score += 12;
+  score = Math.min(score, 96);
+
+  const isFlagged = score >= 30;
+  const isMedium = score >= 15 && score < 30;
+  const title = isFlagged ? 'Potential concern detected' : isMedium ? 'Low-level signal detected' : 'No strong signal found';
+  const description = matched.length
+    ? matched.map(item => item.description).join(' ')
+    : 'The demo rules did not match any configured signal. This does not guarantee that the message is safe; indirect harassment, sarcasm, slang, and context may be missed.';
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultDescription').textContent = description;
+  document.getElementById('riskScore').textContent = `${score}%`;
+  document.getElementById('riskMeter').style.width = `${score}%`;
+  document.getElementById('riskMeter').classList.toggle('safe-meter', score < 30);
+  const badge = document.getElementById('riskBadge');
+  badge.textContent = isFlagged ? 'REVIEW' : isMedium ? 'LOW SIGNAL' : 'NO MATCH';
+  badge.classList.toggle('safe', !isFlagged);
+  resultCard.classList.remove('hidden');
+  analyzedCount++;
+  document.getElementById('messagesAnalyzed').textContent = analyzedCount.toLocaleString('en-US');
+  if (isFlagged) {
+    flaggedCount++;
+    document.getElementById('flaggedCount').textContent = flaggedCount.toLocaleString('en-US');
+    addIncident(matched[0]?.name || 'Manual review suggested', score >= 40 ? 'High' : 'Medium');
+  }
+  resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+});
+
+function addIncident(signalName, risk) {
+  const tbody = document.getElementById('incidentRows');
+  const row = document.createElement('tr');
+  const id = 1049 + tbody.querySelectorAll('tr').length;
+  const riskClass = risk === 'High' ? 'risk-high' : 'risk-medium';
+  row.innerHTML = `<td><span class="item-icon">✉</span><span class="item-main">Message #${id}<small>Local demo · just now</small></span></td><td></td><td><span class="${riskClass}">${risk}</span></td><td><span class="status-review">Needs review</span></td>`;
+  row.children[1].textContent = signalName;
+  tbody.prepend(row);
+  while (tbody.children.length > 5) tbody.removeChild(tbody.lastElementChild);
+}
+
+document.getElementById('viewAllButton').addEventListener('click', () => {
+  showToast('Prototype view: showing the latest sample incidents.');
+});
+
+document.getElementById('menuButton').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelectorAll('.nav-link').forEach(item => item.classList.remove('active'));
+    link.classList.add('active');
+    if (window.innerWidth <= 720) document.getElementById('sidebar').classList.remove('open');
+  });
+});
+'''
+}
+
+for name, content in files.items():
+    with open(os.path.join(base, name), "w", encoding="utf-8") as f:
+        f.write(content)
+
+zip_path = "/mnt/data/harassment_detection_frontend.zip"
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+    for name in files:
+        zf.write(os.path.join(base, name), arcname=f"harassment_detection_frontend/{name}")
+
+print("Created frontend files:")
+for name in files:
+    print(os.path.join(base, name))
+print("ZIP:", zip_path)
 
